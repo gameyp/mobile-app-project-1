@@ -58,6 +58,12 @@ class HomePage extends StatelessWidget {
                         todoModel.items[index].description!.isNotEmpty
                         ? Text(todoModel.items[index].description!)
                         : null,
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        todoModel.removeItem(index);
+                      },
+                    ),
                   ),
                 ),
               );
