@@ -17,48 +17,52 @@ class HomePage extends StatelessWidget {
           return ListView.builder(
             itemCount: todoModel.items.length,
             itemBuilder: (BuildContext context, int index) {
-              return Dismissible(
-                key: Key(todoModel.items[index].topic),
-                onDismissed: (direction) {
-                  if (direction == DismissDirection.endToStart) {
-                    // Delete item
-                    todoModel.removeItem(index);
-                  } else if (direction == DismissDirection.startToEnd) {
-                    // Edit item
-                    _editItem(context, todoModel, index);
-                  }
-                },
-                background: Container(
-                  color: Colors.blue,
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.white,
+              return KeyedSubtree(
+                key: ValueKey(todoModel.items[index]),
+                child: Dismissible(
+                  key: Key(todoModel.items[index].topic),
+                  onDismissed: (direction) {
+                    if (direction == DismissDirection.endToStart) {
+                      // Delete item
+                      todoModel.removeItem(index);
+                    } else if (direction == DismissDirection.startToEnd) {
+                      // Edit item
+                      _editItem(context, todoModel, index);
+                    }
+                  },
+                  background: Container(
+                    color: Colors.blue,
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
+                      child: Icon(
+                        Icons.edit,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-                secondaryBackground: Container(
-                  color: Colors.red,
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
-                    child: Icon(
-                      Icons.delete,
-                      color: Colors.white,
+                  secondaryBackground: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-                child: ListTile(
-                  title: Text(todoModel.items[index].topic),
-                  subtitle: todoModel.items[index].description != null &&
-                      todoModel.items[index].description!.isNotEmpty
-                      ? Text(todoModel.items[index].description!)
-                      : null,
+                  child: ListTile(
+                    title: Text(todoModel.items[index].topic),
+                    subtitle: todoModel.items[index].description != null &&
+                        todoModel.items[index].description!.isNotEmpty
+                        ? Text(todoModel.items[index].description!)
+                        : null,
+                  ),
                 ),
               );
             },
+
           );
         },
       ),
@@ -99,10 +103,14 @@ class HomePage extends StatelessWidget {
                   TextButton(
                     child: Text('Add'),
                     onPressed: () {
-                      Navigator.of(context).pop({
-                        'topic': topicController.text.trim(),
-                        'description': descriptionController.text.trim(),
-                      });
+                      String topic = topicController.text.trim();
+                      String? description = descriptionController.text.trim();
+                      if (topic.isNotEmpty) {
+                        Navigator.of(context).pop({
+                          'topic': topic,
+                          'description': description,
+                        });
+                      }
                     },
                   ),
                 ],
@@ -118,7 +126,6 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
   void _editItem(BuildContext context, TodoModel todoModel, int index) async {
     Map<String, String?>? result = await showDialog(
       context: context,
@@ -156,11 +163,15 @@ class HomePage extends StatelessWidget {
             TextButton(
               child: Text('Save'),
               onPressed: () {
-                todoModel.updateItem(
-                  index,
-                  topicController.text.trim(),
-                  descriptionController.text.trim(),
-                );
+                final newTopic = topicController.text.trim();
+                final newDescription = descriptionController.text.trim();
+                if (newTopic.isNotEmpty) {
+                  todoModel.updateItem(
+                    index,
+                    newTopic,
+                    newDescription.isNotEmpty ? newDescription : null,
+                  );
+                }
                 Navigator.of(context).pop();
               },
             ),
@@ -170,11 +181,15 @@ class HomePage extends StatelessWidget {
     );
 
     if (result != null) {
-      todoModel.updateItem(
-        index,
-        result['topic']!,
-        result['description'] ?? '',
-      );
+      final newTopic = result['topic']!.trim();
+      final newDescription = result['description']?.trim();
+      if (newTopic.isNotEmpty) {
+        todoModel.updateItem(
+          index,
+          newTopic,
+          newDescription != null && newDescription.isNotEmpty ? newDescription : null,
+        );
+      }
     }
   }
 }
