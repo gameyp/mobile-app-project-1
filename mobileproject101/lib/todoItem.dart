@@ -8,12 +8,14 @@ class TodoItem {
   late final String topic;
   late final String? description;
   bool isDone;
+  bool isDeleted; // new property to mark an item as deleted
 
   TodoItem({
     required this.id,
     required this.topic,
     this.description,
     this.isDone = false,
+    this.isDeleted = false, // set default value to false
   });
 
   Map<String, dynamic> toMap() {

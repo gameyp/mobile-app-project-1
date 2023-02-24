@@ -10,23 +10,15 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  late List<TodoItem> _completedItems;
-  late List<TodoItem> _searchResults;
-  late TextEditingController _searchController;
+  late final TextEditingController _searchController;
+  late final List<TodoItem> _filteredItems;
+  late bool _showDeletedIcon = false;
 
   @override
   void initState() {
     super.initState();
-    final todoModel = context.read<TodoModel>();
-    _completedItems = todoModel.completedItems;
-    _searchResults = List.of(_completedItems);
     _searchController = TextEditingController();
-    _searchController.addListener(() {
-      setState(() {
-        _searchResults = _completedItems.where((item) =>
-            item.topic.toLowerCase().contains(_searchController.text.toLowerCase())).toList();
-      });
-    });
+    _filteredItems = [];
   }
 
   @override
@@ -37,6 +29,11 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final todoModel = context.watch<TodoModel>();
+    final completedItems = todoModel.completedItems;
+
+    _filterItems(completedItems);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('TODO app [V1]'),
@@ -44,33 +41,32 @@ class _HistoryPageState extends State<HistoryPage> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search for completed items',
-                prefixIcon: Icon(Icons.search),
-                suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                  icon: Icon(Icons.clear),
+                hintText: 'Search by topic',
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.search),
                   onPressed: () {
-                    _searchController.clear();
+                    _filterItems(completedItems);
                   },
-                )
-                    : null,
+                ),
               ),
             ),
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: _searchResults.length,
+              itemCount: _filteredItems.length,
               itemBuilder: (BuildContext context, int index) {
+                final item = _filteredItems[index];
                 return ListTile(
-                  title: Text(_searchResults[index].topic),
-                  subtitle: _searchResults[index].description != null &&
-                      _searchResults[index].description!.isNotEmpty
-                      ? Text(_searchResults[index].description!)
+                  title: Text(item.topic),
+                  subtitle: item.description != null &&
+                      item.description!.isNotEmpty
+                      ? Text(item.description!)
                       : null,
+                  trailing: _getTrailingIcon(item),
                 );
               },
             ),
@@ -78,5 +74,31 @@ class _HistoryPageState extends State<HistoryPage> {
         ],
       ),
     );
+  }
+
+  void _filterItems(List<TodoItem> completedItems) {
+    final searchQuery = _searchController.text.toLowerCase();
+    if (searchQuery.isNotEmpty) {
+      _filteredItems.clear();
+      _filteredItems.addAll(completedItems.where((item) =>
+      item.topic.toLowerCase().contains(searchQuery) ||
+          (item.description != null && item.description!.toLowerCase().contains(searchQuery))));
+      _showDeletedIcon = true; // Set _showDeletedIcon to true when there is a search query
+    } else {
+      _filteredItems.clear();
+      _filteredItems.addAll(completedItems);
+      _showDeletedIcon = false; // Set _showDeletedIcon to false when there is no search query
+    }
+  }
+
+  Widget? _getTrailingIcon(TodoItem item) {
+    if (_showDeletedIcon && item.isDeleted) {
+      // Doesn't work trash icon doesn't appear
+      return const Icon(Icons.delete, color: Colors.red);
+    } else if (item.isDone) {
+      return const Icon(Icons.check, color: Colors.green);
+    } else {
+      return null;
+    }
   }
 }
