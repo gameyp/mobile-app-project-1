@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'history.dart';
-import 'setting.dart';
 import 'homepage.dart';
 import 'todoItem.dart';
 
@@ -31,7 +30,6 @@ class _MyAppState extends State<MyApp> {
   final List<Widget> _pages = [
     const HomePage(),
     const HistoryPage(),
-    const SettingPage(),
   ];
 
   @override
@@ -53,10 +51,6 @@ class _MyAppState extends State<MyApp> {
             BottomNavigationBarItem(
               icon: Icon(Icons.search),
               label: 'History',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
             ),
           ],
           onTap: (index) {

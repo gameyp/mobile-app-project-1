@@ -8,13 +8,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class TodoItem {
   final String topic;
   final String? description;
+  bool isDone; // new property
 
-  TodoItem({required this.topic, this.description});
+  TodoItem({required this.topic, this.description, this.isDone = false});
 
   Map<String, dynamic> toMap() {
     return {
       'topic': topic,
       'description': description,
+      'isDone': isDone, // add isDone to the toMap method
     };
   }
 
@@ -22,6 +24,7 @@ class TodoItem {
     return TodoItem(
       topic: map['topic'],
       description: map['description'],
+      isDone: map['isDone'] ?? false, // initialize isDone from the map
     );
   }
 
@@ -65,7 +68,7 @@ class TodoModel extends ChangeNotifier {
     _items.add(newItem);
     _itemsNotifier.value = _items;
     _saveItems();
-    notifyListeners(); // add this line to notify the listeners
+    notifyListeners();
   }
 
   void removeItem(int index) {
@@ -76,10 +79,29 @@ class TodoModel extends ChangeNotifier {
   }
 
   void updateItem(int index, String topic, String? description) {
-    final updatedItem = TodoItem(topic: topic, description: description);
+    final updatedItem =
+    TodoItem(topic: topic, description: description, isDone: false);
     _items[index] = updatedItem;
     _itemsNotifier.value = _items;
     _saveItems();
     notifyListeners();
   }
+
+  void toggleChecked(int index) {
+    _items[index].isDone = !_items[index].isDone;
+    _itemsNotifier.value = _items;
+    _saveItems();
+    notifyListeners();
+  }
+
+  List<TodoItem> getCheckedItems() {
+    return _items.where((item) => item.isDone).toList();
+  }
+
+  void toggleDone(int index) {
+    _items[index].isDone = !_items[index].isDone;
+    _saveItems();
+    notifyListeners();
+  }
+
 }

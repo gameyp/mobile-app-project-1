@@ -17,58 +17,55 @@ class HomePage extends StatelessWidget {
           return ListView.builder(
             itemCount: todoModel.items.length,
             itemBuilder: (BuildContext context, int index) {
-              return KeyedSubtree(
-                key: ValueKey(todoModel.items[index]),
-                child: Dismissible(
-                  key: Key(todoModel.items[index].topic),
-                  onDismissed: (direction) {
-                    if (direction == DismissDirection.endToStart) {
-                      // Delete item
-                      todoModel.removeItem(index);
-                    } else if (direction == DismissDirection.startToEnd) {
-                      // Edit item
-                      _editItem(context, todoModel, index);
-                    }
-                  },
-                  background: Container(
-                    color: Colors.blue,
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 0.0),
-                      child: Icon(
-                        Icons.edit,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  secondaryBackground: Container(
-                    color: Colors.red,
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
-                      child: Icon(
-                        Icons.delete,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  child: ListTile(
-                    title: Text(todoModel.items[index].topic),
-                    subtitle: todoModel.items[index].description != null &&
-                        todoModel.items[index].description!.isNotEmpty
-                        ? Text(todoModel.items[index].description!)
-                        : null,
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        todoModel.removeItem(index);
-                      },
+              final item = todoModel.items[index];
+              return Dismissible(
+                key: UniqueKey(),
+                onDismissed: (direction) {
+                  if (direction == DismissDirection.endToStart) {
+                    todoModel.removeItem(index);
+                  } else {
+                    _showEditDialog(context, todoModel, item);
+                  }
+                },
+                background: Container(
+                  color: Colors.green,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(Icons.edit, color: Colors.white),
+                        Text('Edit', style: TextStyle(color: Colors.white)),
+                      ],
                     ),
                   ),
                 ),
+                secondaryBackground: Container(
+                  color: Colors.red,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.delete, color: Colors.white),
+                        Text('Delete', style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                  ),
+                ),
+                child: CheckboxListTile(
+                  title: Text(item.topic),
+                  subtitle: item.description != null &&
+                      item.description!.isNotEmpty
+                      ? Text(item.description!)
+                      : null,
+                  value: item.isDone,
+                  onChanged: (newValue) {
+                    todoModel.toggleDone(index);
+                  },
+                ),
               );
             },
-
           );
         },
       ),
@@ -132,28 +129,28 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-  void _editItem(BuildContext context, TodoModel todoModel, int index) async {
-    Map<String, String?>? result = await showDialog(
+
+  void _showEditDialog(BuildContext context, TodoModel todoModel,
+      TodoItem item) async {
+    final topicController = TextEditingController(text: item.topic);
+    final descriptionController = TextEditingController(text: item.description);
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
-        final topicController =
-        TextEditingController(text: todoModel.items[index].topic);
-        final descriptionController =
-        TextEditingController(text: todoModel.items[index].description);
         return AlertDialog(
-          title: Text('Edit item'),
+          title: const Text('Edit item'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: topicController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Enter item topic',
                 ),
               ),
               TextField(
                 controller: descriptionController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Enter item description',
                 ),
               ),
@@ -161,41 +158,25 @@ class HomePage extends StatelessWidget {
           ),
           actions: [
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Save'),
+              child: const Text('Save'),
               onPressed: () {
                 final newTopic = topicController.text.trim();
                 final newDescription = descriptionController.text.trim();
                 if (newTopic.isNotEmpty) {
-                  todoModel.updateItem(
-                    index,
-                    newTopic,
-                    newDescription.isNotEmpty ? newDescription : null,
-                  );
+                  todoModel.updateItem(todoModel.items.indexOf(item), newTopic, newDescription);
+                  Navigator.of(context).pop();
                 }
-                Navigator.of(context).pop();
               },
             ),
           ],
         );
       },
     );
-
-    if (result != null) {
-      final newTopic = result['topic']!.trim();
-      final newDescription = result['description']?.trim();
-      if (newTopic.isNotEmpty) {
-        todoModel.updateItem(
-          index,
-          newTopic,
-          newDescription != null && newDescription.isNotEmpty ? newDescription : null,
-        );
-      }
-    }
   }
 }
