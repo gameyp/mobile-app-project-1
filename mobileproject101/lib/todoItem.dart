@@ -1,30 +1,36 @@
 // ignore_for_file: file_names
-
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TodoItem {
-  final String topic;
-  final String? description;
-  bool isDone; // new property
+  late final int id;
+  late final String topic;
+  late final String? description;
+  bool isDone;
 
-  TodoItem({required this.topic, this.description, this.isDone = false});
+  TodoItem({
+    required this.id,
+    required this.topic,
+    this.description,
+    this.isDone = false,
+  });
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'topic': topic,
       'description': description,
-      'isDone': isDone, // add isDone to the toMap method
+      'isDone': isDone,
     };
   }
 
   factory TodoItem.fromMap(Map<String, dynamic> map) {
     return TodoItem(
+      id: map['id'],
       topic: map['topic'],
       description: map['description'],
-      isDone: map['isDone'] ?? false, // initialize isDone from the map
+      isDone: map['isDone'] ?? false,
     );
   }
 
@@ -36,9 +42,12 @@ class TodoItem {
 
 class TodoModel extends ChangeNotifier {
   final _items = <TodoItem>[];
+  final _completedItems = <TodoItem>[];
   final _itemsNotifier = ValueNotifier<List<TodoItem>>([]);
 
   List<TodoItem> get items => _itemsNotifier.value;
+
+  List<TodoItem> get completedItems => _completedItems;
 
   TodoModel() {
     _loadItems();
@@ -50,7 +59,7 @@ class TodoModel extends ChangeNotifier {
     if (json != null) {
       _items.addAll(List<TodoItem>.from(
         jsonDecode(json).map(
-              (item) => TodoItem.fromMap(item),
+          (item) => TodoItem.fromMap(item),
         ),
       ));
       _itemsNotifier.value = _items;
@@ -64,7 +73,11 @@ class TodoModel extends ChangeNotifier {
   }
 
   void addItem(String topic, String? description) {
-    final newItem = TodoItem(topic: topic, description: description);
+    final newItem = TodoItem(
+      id: DateTime.now().millisecondsSinceEpoch,
+      topic: topic,
+      description: description,
+    );
     _items.add(newItem);
     _itemsNotifier.value = _items;
     _saveItems();
@@ -72,36 +85,37 @@ class TodoModel extends ChangeNotifier {
   }
 
   void removeItem(int index) {
-    _items.removeAt(index);
+    final removedItem = _items.removeAt(index);
+    _completedItems.add(removedItem);
     _itemsNotifier.value = _items;
     _saveItems();
     notifyListeners();
   }
 
-  void updateItem(int index, String topic, String? description) {
-    final updatedItem =
-    TodoItem(topic: topic, description: description, isDone: false);
-    _items[index] = updatedItem;
-    _itemsNotifier.value = _items;
-    _saveItems();
-    notifyListeners();
-  }
-
-  void toggleChecked(int index) {
-    _items[index].isDone = !_items[index].isDone;
-    _itemsNotifier.value = _items;
-    _saveItems();
-    notifyListeners();
-  }
-
-  List<TodoItem> getCheckedItems() {
-    return _items.where((item) => item.isDone).toList();
+  void updateItem(int id, String topic, String? description) {
+    final itemIndex = _items.indexWhere((item) => item.id == id);
+    if (itemIndex >= 0) {
+      final updatedItem = TodoItem(
+        id: id,
+        topic: topic,
+        description: description,
+        isDone: false,
+      );
+      _items[itemIndex] = updatedItem;
+      _itemsNotifier.value = _items;
+      _saveItems();
+      notifyListeners();
+    }
   }
 
   void toggleDone(int index) {
     _items[index].isDone = !_items[index].isDone;
+    if (_items[index].isDone) {
+      final removedItem = _items.removeAt(index);
+      _completedItems.add(removedItem);
+    }
+    _itemsNotifier.value = _items;
     _saveItems();
     notifyListeners();
   }
-
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'todoItem.dart';
 
 class HistoryPage extends StatelessWidget {
@@ -9,7 +8,7 @@ class HistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final todoModel = context.watch<TodoModel>();
-    final completedItems = todoModel.items.where((item) => item.isDone).toList();
+    final completedItems = todoModel.completedItems;
 
     return Scaffold(
       appBar: AppBar(
@@ -21,7 +20,7 @@ class HistoryPage extends StatelessWidget {
           return ListTile(
             title: Text(completedItems[index].topic),
             subtitle: completedItems[index].description != null &&
-                completedItems[index].description!.isNotEmpty
+                    completedItems[index].description!.isNotEmpty
                 ? Text(completedItems[index].description!)
                 : null,
           );

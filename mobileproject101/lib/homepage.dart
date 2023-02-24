@@ -55,10 +55,10 @@ class HomePage extends StatelessWidget {
                 ),
                 child: CheckboxListTile(
                   title: Text(item.topic),
-                  subtitle: item.description != null &&
-                      item.description!.isNotEmpty
-                      ? Text(item.description!)
-                      : null,
+                  subtitle:
+                      item.description != null && item.description!.isNotEmpty
+                          ? Text(item.description!)
+                          : null,
                   value: item.isDone,
                   onChanged: (newValue) {
                     todoModel.toggleDone(index);
@@ -130,8 +130,8 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void _showEditDialog(BuildContext context, TodoModel todoModel,
-      TodoItem item) async {
+  void _showEditDialog(
+      BuildContext context, TodoModel todoModel, TodoItem item) async {
     final topicController = TextEditingController(text: item.topic);
     final descriptionController = TextEditingController(text: item.description);
     await showDialog(
@@ -169,7 +169,8 @@ class HomePage extends StatelessWidget {
                 final newTopic = topicController.text.trim();
                 final newDescription = descriptionController.text.trim();
                 if (newTopic.isNotEmpty) {
-                  todoModel.updateItem(todoModel.items.indexOf(item), newTopic, newDescription);
+                  todoModel.updateItem(
+                      todoModel.items.indexOf(item), newTopic, newDescription);
                   Navigator.of(context).pop();
                 }
               },
