@@ -10,11 +10,14 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        // AppBar
         appBar: AppBar(
           title: const Text('TODO App'),
         ),
+        // Body
         body: Consumer<TodoModel>(
           builder: (context, todoModel, child) {
+            // ListView with Dismissible
             return ListView.builder(
               itemCount: todoModel.items.length,
               itemBuilder: (BuildContext context, int index) {
@@ -25,13 +28,17 @@ class HomePage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.0),
                     border: Border.all(color: Colors.grey, width: 2.0),
                   ),
-                  margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                  margin: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 10.0),
+                  // Dismissible widget
                   child: Dismissible(
                     key: UniqueKey(),
                     onDismissed: (direction) {
                       if (direction == DismissDirection.endToStart) {
+                        // Remove item from the list when swiped to the left
                         todoModel.removeItem(index);
                       } else {
+                        // Show edit dialog when swiped to the right
                         _showEditDialog(context, todoModel, item);
                       }
                     },
@@ -56,15 +63,17 @@ class HomePage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: const [
                             Icon(Icons.delete, color: Colors.white),
-                            Text('Delete', style: TextStyle(color: Colors.white)),
+                            Text('Delete',
+                                style: TextStyle(color: Colors.white)),
                           ],
                         ),
                       ),
                     ),
+                    // CheckboxListTile widget
                     child: CheckboxListTile(
                       title: Text(item.topic),
-                      subtitle:
-                      item.description != null && item.description!.isNotEmpty
+                      subtitle: item.description != null &&
+                              item.description!.isNotEmpty
                           ? Text(item.description!)
                           : null,
                       value: item.isDone,
@@ -78,9 +87,11 @@ class HomePage extends StatelessWidget {
             );
           },
         ),
+        // FloatingActionButton
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             TodoModel todoModel = context.read<TodoModel>();
+            // Show add item dialog
             Map<String, String?>? result = await showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -139,7 +150,6 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
 
   void _showEditDialog(
       BuildContext context, TodoModel todoModel, TodoItem item) async {

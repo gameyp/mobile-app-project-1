@@ -28,8 +28,8 @@ class _MyAppState extends State<MyApp> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const HomePage(),
-    const HistoryPage(),
+    const HomePage(), // First tab is the home page
+    const HistoryPage(), // Second tab is the history page
   ];
 
   @override
@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-        body: _pages[_currentIndex],
+        body: _pages[_currentIndex], // Show the current page based on the current index
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,
           items: const [
@@ -55,7 +55,7 @@ class _MyAppState extends State<MyApp> {
           ],
           onTap: (index) {
             setState(() {
-              _currentIndex = index;
+              _currentIndex = index; // Set the current index to the selected tab
             });
           },
         ),

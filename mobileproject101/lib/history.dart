@@ -9,6 +9,7 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+  // declare the necessary variables
   late final TextEditingController _searchController;
   late final List<TodoItem> _filteredItems;
   late bool _showDeletedIcon = false;
@@ -16,12 +17,14 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState() {
     super.initState();
+    // initialize the necessary variables in initState
     _searchController = TextEditingController();
     _filteredItems = [];
   }
 
   @override
   void dispose() {
+    // dispose of the _searchController in dispose method
     _searchController.dispose();
     super.dispose();
   }
@@ -31,6 +34,7 @@ class _HistoryPageState extends State<HistoryPage> {
     final todoModel = context.watch<TodoModel>();
     final completedItems = todoModel.completedItems;
 
+    // filter the completedItems based on the search query
     _filterItems(completedItems);
 
     return Scaffold(
@@ -48,6 +52,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () {
+                    // refilter the items when the search button is pressed
                     _filterItems(completedItems);
                   },
                 ),
@@ -75,6 +80,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  // method to filter the completed items based on the search query
   void _filterItems(List<TodoItem> completedItems) {
     final searchQuery = _searchController.text.toLowerCase();
     if (searchQuery.isNotEmpty) {
@@ -90,6 +96,7 @@ class _HistoryPageState extends State<HistoryPage> {
     }
   }
 
+  // method to return the appropriate trailing icon based on the item's status and whether there is a search query
   Widget? _getTrailingIcon(TodoItem item) {
     if (_showDeletedIcon && item.isDeleted) {
       return const Icon(Icons.delete, color: Colors.red);
