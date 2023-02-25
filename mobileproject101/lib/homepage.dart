@@ -11,7 +11,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   int _comparePriorities(TodoItem a, TodoItem b) {
     final priorityValue = {
       Colors.green: 1,
@@ -115,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                               child: CheckboxListTile(
                                 title: Text(item.topic),
                                 subtitle: item.description != null &&
-                                    item.description!.isNotEmpty
+                                        item.description!.isNotEmpty
                                     ? Text(item.description!)
                                     : null,
                                 value: item.isDone,

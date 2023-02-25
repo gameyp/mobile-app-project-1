@@ -1,4 +1,5 @@
 // ignore_for_file: file_names
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +11,7 @@ class TodoItem {
   bool isDone;
   bool isDeleted; // new property to mark an item as deleted
   Color priority;
+  DateTime? completedDate;
 
   TodoItem({
     required this.id,
@@ -18,6 +20,7 @@ class TodoItem {
     this.isDone = false,
     this.isDeleted = false, // set default value to false
     this.priority = Colors.green, // set default priority to green
+    this.completedDate,
   });
 
   Map<String, dynamic> toMap() {
@@ -26,6 +29,9 @@ class TodoItem {
       'topic': topic,
       'description': description,
       'isDone': isDone,
+      'isDeleted': isDeleted,
+      'priority': priority.value,
+      'completedDate': completedDate?.millisecondsSinceEpoch,
     };
   }
 
@@ -35,6 +41,11 @@ class TodoItem {
       topic: map['topic'],
       description: map['description'],
       isDone: map['isDone'] ?? false,
+      isDeleted: map['isDeleted'] ?? false,
+      priority: Color(map['priority']),
+      completedDate: map['completedDate'] == null
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(map['completedDate']),
     );
   }
 
@@ -91,6 +102,8 @@ class TodoModel extends ChangeNotifier {
 
   void removeItem(int index) {
     final removedItem = _items.removeAt(index);
+    removedItem.isDeleted = true;
+    removedItem.completedDate = DateTime.now();
     _completedItems.add(removedItem);
     _itemsNotifier.value = _items;
     _saveItems();
@@ -106,8 +119,8 @@ class TodoModel extends ChangeNotifier {
         topic: topic,
         description: description,
         isDone: false,
-        priority:
-            priority ?? Colors.green, // Set default priority value to green
+        priority: priority ?? Colors.green,
+        completedDate: _items[itemIndex].completedDate,
       );
       _items[itemIndex] = updatedItem;
       _itemsNotifier.value = _items;
@@ -119,8 +132,14 @@ class TodoModel extends ChangeNotifier {
   void toggleDone(int index) {
     _items[index].isDone = !_items[index].isDone;
     if (_items[index].isDone) {
-      final removedItem = _items.removeAt(index);
-      _completedItems.add(removedItem);
+      final completedItem = _items[index];
+      completedItem.completedDate =
+          DateTime.now(); // set completedDate to current date and time
+      _completedItems.add(completedItem);
+      _items.removeAt(index);
     }
+    _itemsNotifier.value = _items;
+    _saveItems();
+    notifyListeners();
   }
 }

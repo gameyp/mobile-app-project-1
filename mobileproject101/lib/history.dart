@@ -109,11 +109,23 @@ class _HistoryPageState extends State<HistoryPage> {
 
   // method to return the appropriate trailing icon based on the item's status and whether there is a search query
   Widget? _getTrailingIcon(TodoItem item) {
-    // Delete items not show due to some typo need to check
-    if (_showDeletedIcon && item.isDeleted) {
+    if (item.isDone && !item.isDeleted) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.check, color: Colors.green),
+          const SizedBox(width: 4),
+          Text(
+            '${item.completedDate!.month}/${item.completedDate!.day}/${item.completedDate!.year} ${item.completedDate!.hour}:${item.completedDate!.minute}:${item.completedDate!.second}',
+            style: const TextStyle(
+              fontSize: 12,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
+      );
+    } else if (item.isDeleted) {
       return const Icon(Icons.delete, color: Colors.red);
-    } else if (item.isDone) {
-      return const Icon(Icons.check, color: Colors.green);
     } else {
       return null;
     }
