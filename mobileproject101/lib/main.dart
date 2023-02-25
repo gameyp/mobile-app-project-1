@@ -40,9 +40,12 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.green,
         fontFamily: 'ShakyHandSomeComic', // Set the font family for the app
         textTheme: const TextTheme(
-          bodyText1: TextStyle(fontSize: 20.0), // Increase the font size for body text
-          bodyText2: TextStyle(fontSize: 20.0), // Increase the font size for body text
-          headline6: TextStyle(fontSize: 30.0), // Increase the font size for headlines
+          bodyText1: TextStyle(fontSize: 20.0),
+          // Increase the font size for body text
+          bodyText2: TextStyle(fontSize: 20.0),
+          // Increase the font size for body text
+          headline6:
+              TextStyle(fontSize: 30.0), // Increase the font size for headlines
         ),
       ),
       home: SafeArea(

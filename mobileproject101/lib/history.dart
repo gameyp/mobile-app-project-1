@@ -13,7 +13,6 @@ class _HistoryPageState extends State<HistoryPage> {
   // declare the necessary variables
   late final TextEditingController _searchController;
   late final List<TodoItem> _filteredItems;
-  late bool _showDeletedIcon = false;
 
   @override
   void initState() {
@@ -71,7 +70,8 @@ class _HistoryPageState extends State<HistoryPage> {
                   itemBuilder: (BuildContext context, int index) {
                     final item = _filteredItems[index];
                     return ListTile(
-                      title: Text(item.topic,
+                      title: Text(
+                        item.topic,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -101,13 +101,9 @@ class _HistoryPageState extends State<HistoryPage> {
           item.topic.toLowerCase().contains(searchQuery) ||
           (item.description != null &&
               item.description!.toLowerCase().contains(searchQuery))));
-      _showDeletedIcon =
-          true; // Set _showDeletedIcon to true when there is a search query
     } else {
       _filteredItems.clear();
       _filteredItems.addAll(completedItems);
-      _showDeletedIcon =
-          false; // Set _showDeletedIcon to false when there is no search query
     }
   }
 

@@ -20,7 +20,8 @@ class _HomePageState extends State<HomePage> {
 
     if (a.isDone != b.isDone) {
       return a.isDone ? 1 : -1;
-    } else if (priorityValue[a.priority] != null && priorityValue[b.priority] != null) {
+    } else if (priorityValue[a.priority] != null &&
+        priorityValue[b.priority] != null) {
       return priorityValue[b.priority]! - priorityValue[a.priority]!;
     } else if (a.completedDate != null && b.completedDate != null) {
       int dateComparison = b.completedDate!.compareTo(a.completedDate!);
@@ -129,10 +130,12 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Expanded(
                               child: CheckboxListTile(
-                                title: Text(item.topic,
+                                title: Text(
+                                  item.topic,
                                   style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 subtitle: item.description != null &&
                                         item.description!.isNotEmpty
                                     ? Text(item.description!)
@@ -315,7 +318,8 @@ class _HomePageState extends State<HomePage> {
                             selected: priority == Colors.yellow,
                             onSelected: (bool selected) {
                               setState(() {
-                                priority = selected ? Colors.yellow : Colors.red;
+                                priority =
+                                    selected ? Colors.yellow : Colors.red;
                               });
                             },
                           ),

@@ -4,10 +4,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+enum TodoItemStatus {
+  Completed,
+  Deleted,
+}
+
 class TodoItem {
   late final int id;
   late final String topic;
   late final String? description;
+  late final TodoItemStatus status;
   bool isDone;
   bool isDeleted; // new property to mark an item as deleted
   Color priority;
@@ -18,9 +24,10 @@ class TodoItem {
     required this.topic,
     this.description,
     this.isDone = false,
-    this.isDeleted = false, // set default value to false
-    this.priority = Colors.green, // set default priority to green
+    this.isDeleted = false,
+    this.priority = Colors.green,
     this.completedDate,
+    this.status = TodoItemStatus.Completed, // default to Completed
   });
 
   Map<String, dynamic> toMap() {
@@ -101,17 +108,20 @@ class TodoModel extends ChangeNotifier {
   }
 
   void removeItem(int index) {
+    final removedItem = _items.removeAt(index);
     if (index == 0) {
       // mark top item as done and move it to completedItems list
       final doneItem = _items.removeAt(0);
       doneItem.isDone = true;
       doneItem.completedDate = DateTime.now();
+      doneItem.status = TodoItemStatus.Completed;
       _completedItems.add(doneItem);
     } else {
       // remove item at the specified index and add it to completedItems list
       final removedItem = _items.removeAt(index);
       removedItem.isDeleted = true;
       removedItem.completedDate = DateTime.now();
+      removedItem.status = TodoItemStatus.Deleted;
       _completedItems.add(removedItem);
     }
     _itemsNotifier.value = _items;
