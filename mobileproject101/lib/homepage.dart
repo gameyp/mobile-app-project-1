@@ -21,10 +21,11 @@ class HomePage extends StatelessWidget {
                 final item = todoModel.items[index];
                 return Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(9.0),
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(color: Colors.grey, width: 2.0),
                   ),
-                  margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                  margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                   child: Dismissible(
                     key: UniqueKey(),
                     onDismissed: (direction) {
@@ -50,7 +51,7 @@ class HomePage extends StatelessWidget {
                     secondaryBackground: Container(
                       color: Colors.red,
                       child: Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(15),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: const [
