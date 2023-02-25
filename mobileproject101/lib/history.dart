@@ -54,7 +54,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    hintText: 'Search by TODO Item',
+                    hintText: 'Search by TODO Item [Doesn\'t Work As I Expect]',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.search),
                       onPressed: () {

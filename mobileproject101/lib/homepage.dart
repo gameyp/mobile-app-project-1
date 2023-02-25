@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   int _comparePriorities(TodoItem a, TodoItem b) {
     final priorityValue = {
       Colors.green: 1,
@@ -22,6 +23,8 @@ class _HomePageState extends State<HomePage> {
       return a.isDone ? 1 : -1;
     } else if (priorityValue[a.priority] != priorityValue[b.priority]) {
       return priorityValue[b.priority]! - priorityValue[a.priority]!;
+    } else if (a.completedDate != null && b.completedDate != null) {
+      return b.completedDate!.compareTo(a.completedDate!);
     } else {
       return a.topic.compareTo(b.topic);
     }
