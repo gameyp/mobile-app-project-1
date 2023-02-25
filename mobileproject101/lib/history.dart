@@ -4,7 +4,6 @@ import 'todoItem.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);
-
   @override
   State<HistoryPage> createState() => _HistoryPageState();
 }
@@ -93,7 +92,6 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget? _getTrailingIcon(TodoItem item) {
     if (_showDeletedIcon && item.isDeleted) {
-      // Doesn't work trash icon doesn't appear
       return const Icon(Icons.delete, color: Colors.red);
     } else if (item.isDone) {
       return const Icon(Icons.check, color: Colors.green);
