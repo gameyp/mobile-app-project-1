@@ -11,6 +11,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  int _comparePriorities(TodoItem a, TodoItem b) {
+    final priorityValue = {
+      Colors.green: 1,
+      Colors.yellow: 2,
+      Colors.orange: 3,
+    };
+
+    if (priorityValue[a.priority] != priorityValue[b.priority]) {
+      return priorityValue[b.priority]! - priorityValue[a.priority]!;
+    } else {
+      return a.topic.compareTo(b.topic);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -26,13 +41,16 @@ class _HomePageState extends State<HomePage> {
           // set the background color to light green
           child: Consumer<TodoModel>(
             builder: (context, todoModel, child) {
+              // sort the items by priority
+              final items = todoModel.items.toList()
+                ..sort((a, b) => _comparePriorities(a, b));
               // ListView with Dismissible
               return Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: ListView.builder(
-                  itemCount: todoModel.items.length,
+                  itemCount: items.length,
                   itemBuilder: (BuildContext context, int index) {
-                    final item = todoModel.items[index];
+                    final item = items[index];
                     return Container(
                       decoration: BoxDecoration(
                         color: Colors.grey[200],
@@ -97,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                               child: CheckboxListTile(
                                 title: Text(item.topic),
                                 subtitle: item.description != null &&
-                                        item.description!.isNotEmpty
+                                    item.description!.isNotEmpty
                                     ? Text(item.description!)
                                     : null,
                                 value: item.isDone,
