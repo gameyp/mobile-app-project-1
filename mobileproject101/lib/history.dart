@@ -41,7 +41,7 @@ class _HistoryPageState extends State<HistoryPage> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.green[800],
-          title: const Text('TODO App'),
+          title: const Text('TODO List'),
         ),
         body: Container(
           color: Colors.lightGreen[50], // set the background color to light green

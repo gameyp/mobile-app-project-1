@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.green[800],
           // set the background color to Colors.grey[700]
-          title: const Text('Todo App'),
+          title: const Text('Todo List'),
         ),
         // Body
         body: Container(
@@ -255,7 +255,7 @@ class HomePage extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Priority: '),
+                        const Text('Priority: '),
                         ChoiceChip(
                           label: const Text('Low'),
                           selectedColor: Colors.green,
