@@ -78,16 +78,31 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                         // CheckboxListTile widget
-                        child: CheckboxListTile(
-                          title: Text(item.topic),
-                          subtitle: item.description != null &&
-                                  item.description!.isNotEmpty
-                              ? Text(item.description!)
-                              : null,
-                          value: item.isDone,
-                          onChanged: (newValue) {
-                            todoModel.toggleDone(index);
-                          },
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 24,
+                              width: 24,
+                              margin: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: item.priority,
+                              ),
+                            ),
+                            Expanded(
+                              child: CheckboxListTile(
+                                title: Text(item.topic),
+                                subtitle: item.description != null &&
+                                    item.description!.isNotEmpty
+                                    ? Text(item.description!)
+                                    : null,
+                                value: item.isDone,
+                                onChanged: (newValue) {
+                                  todoModel.toggleDone(index);
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -102,58 +117,102 @@ class HomePage extends StatelessWidget {
           onPressed: () async {
             TodoModel todoModel = context.read<TodoModel>();
             // Show add item dialog
-            Map<String, String?>? result =
-                await showDialog<Map<String, String?>>(
+            Map<String, dynamic>? result =
+            await showDialog<Map<String, dynamic>>(
               context: context,
               builder: (BuildContext context) {
                 final topicController = TextEditingController();
                 final descriptionController = TextEditingController();
-                return AlertDialog(
-                  title: const Text('Add an item'),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextField(
-                        controller: topicController,
-                        decoration: const InputDecoration(
-                          hintText: 'Enter item topic',
-                        ),
+                Color priority = Colors.green;
+                return StatefulBuilder(
+                  builder: (context, setState) {
+                    return AlertDialog(
+                      title: const Text('Add an item'),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextField(
+                            controller: topicController,
+                            decoration: const InputDecoration(
+                              hintText: 'Enter item topic',
+                            ),
+                          ),
+                          TextField(
+                            controller: descriptionController,
+                            decoration: const InputDecoration(
+                              hintText: 'Enter item description',
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text('Priority: '),
+                              ChoiceChip(
+                                label: const Text('Low'),
+                                selectedColor: Colors.green,
+                                selected: priority == Colors.green,
+                                onSelected: (selected) {
+                                  setState(() {
+                                    priority = Colors.green;
+                                  });
+                                },
+                              ),
+                              ChoiceChip(
+                                label: const Text('Medium'),
+                                selectedColor: Colors.yellow,
+                                selected: priority == Colors.yellow,
+                                onSelected: (selected) {
+                                  setState(() {
+                                    priority = Colors.yellow;
+                                  });
+                                },
+                              ),
+                              ChoiceChip(
+                                label: const Text('High'),
+                                selectedColor: Colors.orange,
+                                selected: priority == Colors.orange,
+                                onSelected: (selected) {
+                                  setState(() {
+                                    priority = Colors.orange;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      TextField(
-                        controller: descriptionController,
-                        decoration: const InputDecoration(
-                          hintText: 'Enter item description',
+                      actions: [
+                        TextButton(
+                          child: const Text('Cancel'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
                         ),
-                      ),
-                    ],
-                  ),
-                  actions: [
-                    TextButton(
-                      child: const Text('Cancel'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    TextButton(
-                      child: const Text('Add'),
-                      onPressed: () {
-                        String topic = topicController.text.trim();
-                        String? description = descriptionController.text.trim();
-                        if (topic.isNotEmpty) {
-                          Navigator.of(context).pop({
-                            'topic': topic,
-                            'description': description,
-                          });
-                        }
-                      },
-                    ),
-                  ],
+                        TextButton(
+                          child: const Text('Add'),
+                          onPressed: () {
+                            String topic = topicController.text.trim();
+                            String? description = descriptionController.text
+                                .trim();
+                            if (topic.isNotEmpty) {
+                              Navigator.of(context).pop({
+                                'topic': topic,
+                                'description': description,
+                                'priority': priority,
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
             );
 
             if (result != null) {
-              todoModel.addItem(result['topic']!, result['description']);
+              todoModel.addItem(
+                  result['topic']!, result['description'], result['priority']);
             }
           },
           child: const Icon(Icons.add),
@@ -162,52 +221,103 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void _showEditDialog(
-      BuildContext context, TodoModel todoModel, TodoItem item) async {
+  void _showEditDialog(BuildContext context, TodoModel todoModel,
+      TodoItem item) async {
     final topicController = TextEditingController(text: item.topic);
-    final descriptionController = TextEditingController(text: item.description);
+    final descriptionController =
+    TextEditingController(text: item.description ?? '');
+    Color priority = item.priority;
     await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Edit item'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: topicController,
-                decoration: const InputDecoration(
-                  hintText: 'Enter item topic',
-                ),
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Edit item'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: topicController,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter item topic',
+                    ),
+                  ),
+                  TextField(
+                    controller: descriptionController,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter item description',
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Priority: '),
+                        ChoiceChip(
+                          label: const Text('Low'),
+                          selectedColor: Colors.green,
+                          selected: priority == Colors.green,
+                          onSelected: (bool selected) {
+                            setState(() {
+                              priority = selected ? Colors.green : Colors.red;
+                            });
+                          },
+                        ),
+                        const SizedBox(width: 10),
+                        ChoiceChip(
+                          label: const Text('Medium'),
+                          selectedColor: Colors.yellow,
+                          selected: priority == Colors.yellow,
+                          onSelected: (bool selected) {
+                            setState(() {
+                              priority =
+                              selected ? Colors.yellow : Colors.red;
+                            });
+                          },
+                        ),
+                        const SizedBox(width: 10),
+                        ChoiceChip(
+                          label: const Text('High'),
+                          selectedColor: Colors.red,
+                          selected: priority == Colors.red,
+                          onSelected: (bool selected) {
+                            setState(() {
+                              priority = selected ? Colors.red : Colors.green;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              TextField(
-                controller: descriptionController,
-                decoration: const InputDecoration(
-                  hintText: 'Enter item description',
+              actions: [
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Save'),
-              onPressed: () {
-                final newTopic = topicController.text.trim();
-                final newDescription = descriptionController.text.trim();
-                if (newTopic.isNotEmpty) {
-                  todoModel.updateItem(
-                      todoModel.items.indexOf(item), newTopic, newDescription);
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
+                TextButton(
+                  child: const Text('Save'),
+                  onPressed: () {
+                    final newTopic = topicController.text.trim();
+                    final newDescription = descriptionController.text.trim();
+                    if (newTopic.isNotEmpty) {
+                      todoModel.updateItem(
+                          todoModel.items.indexOf(item), newTopic,
+                          newDescription,
+                          priority: priority);
+                      Navigator.of(context).pop();
+                    }
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
     );

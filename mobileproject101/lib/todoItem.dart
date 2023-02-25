@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TodoItem {
@@ -9,6 +9,7 @@ class TodoItem {
   late final String? description;
   bool isDone;
   bool isDeleted; // new property to mark an item as deleted
+  Color priority;
 
   TodoItem({
     required this.id,
@@ -16,6 +17,7 @@ class TodoItem {
     this.description,
     this.isDone = false,
     this.isDeleted = false, // set default value to false
+    this.priority = Colors.green, // set default priority to green
   });
 
   Map<String, dynamic> toMap() {
@@ -74,11 +76,12 @@ class TodoModel extends ChangeNotifier {
     prefs.setString('items', json);
   }
 
-  void addItem(String topic, String? description) {
+  void addItem(String topic, String? description, Color priority) {
     final newItem = TodoItem(
       id: DateTime.now().millisecondsSinceEpoch,
       topic: topic,
       description: description,
+      priority: priority,
     );
     _items.add(newItem);
     _itemsNotifier.value = _items;
@@ -94,7 +97,7 @@ class TodoModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateItem(int id, String topic, String? description) {
+  void updateItem(int id, String topic, String? description, {Color? priority}) {
     final itemIndex = _items.indexWhere((item) => item.id == id);
     if (itemIndex >= 0) {
       final updatedItem = TodoItem(
@@ -102,6 +105,7 @@ class TodoModel extends ChangeNotifier {
         topic: topic,
         description: description,
         isDone: false,
+        priority: priority ?? Colors.green, // Set default priority value to green
       );
       _items[itemIndex] = updatedItem;
       _itemsNotifier.value = _items;
