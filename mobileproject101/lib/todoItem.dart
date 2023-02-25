@@ -101,10 +101,19 @@ class TodoModel extends ChangeNotifier {
   }
 
   void removeItem(int index) {
-    final removedItem = _items.removeAt(index);
-    removedItem.isDeleted = true;
-    removedItem.completedDate = DateTime.now();
-    _completedItems.add(removedItem);
+    if (index == 0) {
+      // mark top item as done and move it to completedItems list
+      final doneItem = _items.removeAt(0);
+      doneItem.isDone = true;
+      doneItem.completedDate = DateTime.now();
+      _completedItems.add(doneItem);
+    } else {
+      // remove item at the specified index and add it to completedItems list
+      final removedItem = _items.removeAt(index);
+      removedItem.isDeleted = true;
+      removedItem.completedDate = DateTime.now();
+      _completedItems.add(removedItem);
+    }
     _itemsNotifier.value = _items;
     _saveItems();
     notifyListeners();
