@@ -15,10 +15,12 @@ class _HomePageState extends State<HomePage> {
     final priorityValue = {
       Colors.green: 1,
       Colors.yellow: 2,
-      Colors.orange: 3,
+      Colors.red: 3,
     };
 
-    if (priorityValue[a.priority] != priorityValue[b.priority]) {
+    if (a.isDone != b.isDone) {
+      return a.isDone ? 1 : -1;
+    } else if (priorityValue[a.priority] != priorityValue[b.priority]) {
       return priorityValue[b.priority]! - priorityValue[a.priority]!;
     } else {
       return a.topic.compareTo(b.topic);
@@ -192,11 +194,11 @@ class _HomePageState extends State<HomePage> {
                               ),
                               ChoiceChip(
                                 label: const Text('High'),
-                                selectedColor: Colors.orange,
-                                selected: priority == Colors.orange,
+                                selectedColor: Colors.red,
+                                selected: priority == Colors.red,
                                 onSelected: (selected) {
                                   setState(() {
-                                    priority = Colors.orange;
+                                    priority = Colors.red;
                                   });
                                 },
                               ),
