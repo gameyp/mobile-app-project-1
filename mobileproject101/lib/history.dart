@@ -40,43 +40,47 @@ class _HistoryPageState extends State<HistoryPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('TODO app [V1]'),
+          backgroundColor: Colors.green[800],
+          title: const Text('TODO App'),
         ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Search by topic',
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.search),
-                    onPressed: () {
-                      // refilter the items when the search button is pressed
-                      _filterItems(completedItems);
-                    },
+        body: Container(
+          color: Colors.lightGreen[50], // set the background color to light green
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search by topic',
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.search),
+                      onPressed: () {
+                        // refilter the items when the search button is pressed
+                        _filterItems(completedItems);
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _filteredItems.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final item = _filteredItems[index];
-                  return ListTile(
-                    title: Text(item.topic),
-                    subtitle: item.description != null &&
-                        item.description!.isNotEmpty
-                        ? Text(item.description!)
-                        : null,
-                    trailing: _getTrailingIcon(item),
-                  );
-                },
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _filteredItems.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final item = _filteredItems[index];
+                    return ListTile(
+                      title: Text(item.topic),
+                      subtitle: item.description != null &&
+                          item.description!.isNotEmpty
+                          ? Text(item.description!)
+                          : null,
+                      trailing: _getTrailingIcon(item),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -101,6 +105,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   // method to return the appropriate trailing icon based on the item's status and whether there is a search query
   Widget? _getTrailingIcon(TodoItem item) {
+    // Delete items not show due to some typo need to check
     if (_showDeletedIcon && item.isDeleted) {
       return const Icon(Icons.delete, color: Colors.red);
     } else if (item.isDone) {

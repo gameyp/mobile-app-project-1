@@ -12,84 +12,90 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         // AppBar
         appBar: AppBar(
-          title: const Text('TODO App'),
+          backgroundColor: Colors.green[800],
+          // set the background color to Colors.grey[700]
+          title: const Text('Todo App'),
         ),
         // Body
-        body: Consumer<TodoModel>(
-          builder: (context, todoModel, child) {
-            // ListView with Dismissible
-            return Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: ListView.builder(
-                itemCount: todoModel.items.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final item = todoModel.items[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(color: Colors.grey, width: 2.0),
-                    ),
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 10.0),
-                    // Dismissible widget
-                    child: Dismissible(
-                      key: UniqueKey(),
-                      onDismissed: (direction) {
-                        if (direction == DismissDirection.endToStart) {
-                          // Remove item from the list when swiped to the left
-                          todoModel.removeItem(index);
-                        } else {
-                          // Show edit dialog when swiped to the right
-                          _showEditDialog(context, todoModel, item);
-                        }
-                      },
-                      background: Container(
-                        color: Colors.green,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: const [
-                              Icon(Icons.edit, color: Colors.white),
-                              Text('Edit',
-                                  style: TextStyle(color: Colors.white)),
-                            ],
-                          ),
-                        ),
+        body: Container(
+          color: Colors.lightGreen[50],
+          // set the background color of the body to Colors.grey[200]
+          child: Consumer<TodoModel>(
+            builder: (context, todoModel, child) {
+              // ListView with Dismissible
+              return Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: ListView.builder(
+                  itemCount: todoModel.items.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final item = todoModel.items[index];
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10.0),
+                        border: Border.all(color: Colors.grey, width: 2.0),
                       ),
-                      secondaryBackground: Container(
-                        color: Colors.red,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
-                              Icon(Icons.delete, color: Colors.white),
-                              Text('Delete',
-                                  style: TextStyle(color: Colors.white)),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // CheckboxListTile widget
-                      child: CheckboxListTile(
-                        title: Text(item.topic),
-                        subtitle: item.description != null &&
-                                item.description!.isNotEmpty
-                            ? Text(item.description!)
-                            : null,
-                        value: item.isDone,
-                        onChanged: (newValue) {
-                          todoModel.toggleDone(index);
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 10.0),
+                      // Dismissible widget
+                      child: Dismissible(
+                        key: UniqueKey(),
+                        onDismissed: (direction) {
+                          if (direction == DismissDirection.endToStart) {
+                            // Remove item from the list when swiped to the left
+                            todoModel.removeItem(index);
+                          } else {
+                            // Show edit dialog when swiped to the right
+                            _showEditDialog(context, todoModel, item);
+                          }
                         },
+                        background: Container(
+                          color: Colors.green,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: const [
+                                Icon(Icons.edit, color: Colors.white),
+                                Text('Edit',
+                                    style: TextStyle(color: Colors.white)),
+                              ],
+                            ),
+                          ),
+                        ),
+                        secondaryBackground: Container(
+                          color: Colors.red,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: const [
+                                Icon(Icons.delete, color: Colors.white),
+                                Text('Delete',
+                                    style: TextStyle(color: Colors.white)),
+                              ],
+                            ),
+                          ),
+                        ),
+                        // CheckboxListTile widget
+                        child: CheckboxListTile(
+                          title: Text(item.topic),
+                          subtitle: item.description != null &&
+                                  item.description!.isNotEmpty
+                              ? Text(item.description!)
+                              : null,
+                          value: item.isDone,
+                          onChanged: (newValue) {
+                            todoModel.toggleDone(index);
+                          },
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            );
-          },
+                    );
+                  },
+                ),
+              );
+            },
+          ),
         ),
         // FloatingActionButton
         floatingActionButton: FloatingActionButton(
