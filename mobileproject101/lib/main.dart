@@ -18,7 +18,7 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -39,25 +39,27 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Scaffold(
-        body: _pages[_currentIndex], // Show the current page based on the current index
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'History',
-            ),
-          ],
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index; // Set the current index to the selected tab
-            });
-          },
+      home: SafeArea(
+        child: Scaffold(
+          body: _pages[_currentIndex], // Show the current page based on the current index
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.search),
+                label: 'History',
+              ),
+            ],
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index; // Set the current index to the selected tab
+              });
+            },
+          ),
         ),
       ),
     );

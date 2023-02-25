@@ -92,7 +92,7 @@ class HomePage extends StatelessWidget {
           onPressed: () async {
             TodoModel todoModel = context.read<TodoModel>();
             // Show add item dialog
-            Map<String, String?>? result = await showDialog(
+            Map<String, String?>? result = await showDialog<Map<String, String?>>(
               context: context,
               builder: (BuildContext context) {
                 final topicController = TextEditingController();

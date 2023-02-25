@@ -37,45 +37,47 @@ class _HistoryPageState extends State<HistoryPage> {
     // filter the completedItems based on the search query
     _filterItems(completedItems);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('TODO app [V1]'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search by topic',
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {
-                    // refilter the items when the search button is pressed
-                    _filterItems(completedItems);
-                  },
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('TODO app [V1]'),
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search by topic',
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      // refilter the items when the search button is pressed
+                      _filterItems(completedItems);
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _filteredItems.length,
-              itemBuilder: (BuildContext context, int index) {
-                final item = _filteredItems[index];
-                return ListTile(
-                  title: Text(item.topic),
-                  subtitle: item.description != null &&
-                      item.description!.isNotEmpty
-                      ? Text(item.description!)
-                      : null,
-                  trailing: _getTrailingIcon(item),
-                );
-              },
+            Expanded(
+              child: ListView.builder(
+                itemCount: _filteredItems.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final item = _filteredItems[index];
+                  return ListTile(
+                    title: Text(item.topic),
+                    subtitle: item.description != null &&
+                        item.description!.isNotEmpty
+                        ? Text(item.description!)
+                        : null,
+                    trailing: _getTrailingIcon(item),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -87,7 +89,8 @@ class _HistoryPageState extends State<HistoryPage> {
       _filteredItems.clear();
       _filteredItems.addAll(completedItems.where((item) =>
       item.topic.toLowerCase().contains(searchQuery) ||
-          (item.description != null && item.description!.toLowerCase().contains(searchQuery))));
+          (item.description != null &&
+              item.description!.toLowerCase().contains(searchQuery))));
       _showDeletedIcon = true; // Set _showDeletedIcon to true when there is a search query
     } else {
       _filteredItems.clear();
