@@ -71,7 +71,11 @@ class _HistoryPageState extends State<HistoryPage> {
                   itemBuilder: (BuildContext context, int index) {
                     final item = _filteredItems[index];
                     return ListTile(
-                      title: Text(item.topic),
+                      title: Text(item.topic,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       subtitle: item.description != null &&
                               item.description!.isNotEmpty
                           ? Text(item.description!)

@@ -20,10 +20,15 @@ class _HomePageState extends State<HomePage> {
 
     if (a.isDone != b.isDone) {
       return a.isDone ? 1 : -1;
-    } else if (priorityValue[a.priority] != priorityValue[b.priority]) {
+    } else if (priorityValue[a.priority] != null && priorityValue[b.priority] != null) {
       return priorityValue[b.priority]! - priorityValue[a.priority]!;
     } else if (a.completedDate != null && b.completedDate != null) {
-      return b.completedDate!.compareTo(a.completedDate!);
+      int dateComparison = b.completedDate!.compareTo(a.completedDate!);
+      if (dateComparison != 0) {
+        return dateComparison;
+      } else {
+        return a.topic.compareTo(b.topic);
+      }
     } else {
       return a.topic.compareTo(b.topic);
     }
@@ -124,7 +129,10 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Expanded(
                               child: CheckboxListTile(
-                                title: Text(item.topic),
+                                title: Text(item.topic,
+                                  style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),),
                                 subtitle: item.description != null &&
                                         item.description!.isNotEmpty
                                     ? Text(item.description!)
