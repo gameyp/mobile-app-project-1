@@ -41,7 +41,8 @@ class _MyAppState extends State<MyApp> {
       ),
       home: SafeArea(
         child: Scaffold(
-          body: _pages[_currentIndex], // Show the current page based on the current index
+          body: _pages[_currentIndex],
+          // Show the current page based on the current index
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _currentIndex,
             items: const [
@@ -56,7 +57,8 @@ class _MyAppState extends State<MyApp> {
             ],
             onTap: (index) {
               setState(() {
-                _currentIndex = index; // Set the current index to the selected tab
+                _currentIndex =
+                    index; // Set the current index to the selected tab
               });
             },
           ),

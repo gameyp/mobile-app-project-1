@@ -4,6 +4,7 @@ import 'todoItem.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);
+
   @override
   State<HistoryPage> createState() => _HistoryPageState();
 }
@@ -44,7 +45,8 @@ class _HistoryPageState extends State<HistoryPage> {
           title: const Text('TODO List'),
         ),
         body: Container(
-          color: Colors.lightGreen[50], // set the background color to light green
+          color: Colors.lightGreen[50],
+          // set the background color to light green
           child: Column(
             children: [
               Padding(
@@ -71,7 +73,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     return ListTile(
                       title: Text(item.topic),
                       subtitle: item.description != null &&
-                          item.description!.isNotEmpty
+                              item.description!.isNotEmpty
                           ? Text(item.description!)
                           : null,
                       trailing: _getTrailingIcon(item),
@@ -92,14 +94,16 @@ class _HistoryPageState extends State<HistoryPage> {
     if (searchQuery.isNotEmpty) {
       _filteredItems.clear();
       _filteredItems.addAll(completedItems.where((item) =>
-      item.topic.toLowerCase().contains(searchQuery) ||
+          item.topic.toLowerCase().contains(searchQuery) ||
           (item.description != null &&
               item.description!.toLowerCase().contains(searchQuery))));
-      _showDeletedIcon = true; // Set _showDeletedIcon to true when there is a search query
+      _showDeletedIcon =
+          true; // Set _showDeletedIcon to true when there is a search query
     } else {
       _filteredItems.clear();
       _filteredItems.addAll(completedItems);
-      _showDeletedIcon = false; // Set _showDeletedIcon to false when there is no search query
+      _showDeletedIcon =
+          false; // Set _showDeletedIcon to false when there is no search query
     }
   }
 

@@ -3,23 +3,27 @@ import 'package:provider/provider.dart';
 
 import 'todoItem.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         // AppBar
         appBar: AppBar(
-          backgroundColor: Colors.green[800],
-          // set the background color to Colors.grey[700]
+          backgroundColor: Colors.green[800], // Updated color
           title: const Text('Todo List'),
         ),
         // Body
         body: Container(
           color: Colors.lightGreen[50],
-          // set the background color of the body to Colors.grey[200]
+          // set the background color to light green
           child: Consumer<TodoModel>(
             builder: (context, todoModel, child) {
               // ListView with Dismissible
@@ -93,12 +97,14 @@ class HomePage extends StatelessWidget {
                               child: CheckboxListTile(
                                 title: Text(item.topic),
                                 subtitle: item.description != null &&
-                                    item.description!.isNotEmpty
+                                        item.description!.isNotEmpty
                                     ? Text(item.description!)
                                     : null,
                                 value: item.isDone,
                                 onChanged: (newValue) {
-                                  todoModel.toggleDone(index);
+                                  setState(() {
+                                    todoModel.toggleDone(index);
+                                  });
                                 },
                               ),
                             ),
@@ -118,7 +124,7 @@ class HomePage extends StatelessWidget {
             TodoModel todoModel = context.read<TodoModel>();
             // Show add item dialog
             Map<String, dynamic>? result =
-            await showDialog<Map<String, dynamic>>(
+                await showDialog<Map<String, dynamic>>(
               context: context,
               builder: (BuildContext context) {
                 final topicController = TextEditingController();
@@ -192,8 +198,8 @@ class HomePage extends StatelessWidget {
                           child: const Text('Add'),
                           onPressed: () {
                             String topic = topicController.text.trim();
-                            String? description = descriptionController.text
-                                .trim();
+                            String? description =
+                                descriptionController.text.trim();
                             if (topic.isNotEmpty) {
                               Navigator.of(context).pop({
                                 'topic': topic,
@@ -221,105 +227,102 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void _showEditDialog(BuildContext context, TodoModel todoModel,
-      TodoItem item) async {
+  void _showEditDialog(
+      BuildContext context, TodoModel todoModel, TodoItem item) async {
     final topicController = TextEditingController(text: item.topic);
     final descriptionController =
-    TextEditingController(text: item.description ?? '');
+        TextEditingController(text: item.description ?? '');
     Color priority = item.priority;
     await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text('Edit item'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: topicController,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter item topic',
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: const Text('Edit item'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: topicController,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter item topic',
+                      ),
                     ),
+                    TextField(
+                      controller: descriptionController,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter item description',
+                      ),
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ChoiceChip(
+                            label: const Text('Low'),
+                            selectedColor: Colors.green,
+                            selected: priority == Colors.green,
+                            onSelected: (bool selected) {
+                              setState(() {
+                                priority = selected ? Colors.green : Colors.red;
+                              });
+                            },
+                          ),
+                          const SizedBox(width: 10),
+                          ChoiceChip(
+                            label: const Text('Medium'),
+                            selectedColor: Colors.yellow,
+                            selected: priority == Colors.yellow,
+                            onSelected: (bool selected) {
+                              setState(() {
+                                priority =
+                                    selected ? Colors.yellow : Colors.red;
+                              });
+                            },
+                          ),
+                          const SizedBox(width: 10),
+                          ChoiceChip(
+                            label: const Text('High'),
+                            selectedColor: Colors.red,
+                            selected: priority == Colors.red,
+                            onSelected: (bool selected) {
+                              setState(() {
+                                priority = selected ? Colors.red : Colors.green;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    child: const Text('Cancel'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
-                  TextField(
-                    controller: descriptionController,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter item description',
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('Priority: '),
-                        ChoiceChip(
-                          label: const Text('Low'),
-                          selectedColor: Colors.green,
-                          selected: priority == Colors.green,
-                          onSelected: (bool selected) {
-                            setState(() {
-                              priority = selected ? Colors.green : Colors.red;
-                            });
-                          },
-                        ),
-                        const SizedBox(width: 10),
-                        ChoiceChip(
-                          label: const Text('Medium'),
-                          selectedColor: Colors.yellow,
-                          selected: priority == Colors.yellow,
-                          onSelected: (bool selected) {
-                            setState(() {
-                              priority =
-                              selected ? Colors.yellow : Colors.red;
-                            });
-                          },
-                        ),
-                        const SizedBox(width: 10),
-                        ChoiceChip(
-                          label: const Text('High'),
-                          selectedColor: Colors.red,
-                          selected: priority == Colors.red,
-                          onSelected: (bool selected) {
-                            setState(() {
-                              priority = selected ? Colors.red : Colors.green;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
+                  TextButton(
+                    child: const Text('Save'),
+                    onPressed: () {
+                      final newTopic = topicController.text.trim();
+                      final newDescription = descriptionController.text.trim();
+                      if (newTopic.isNotEmpty) {
+                        todoModel.updateItem(todoModel.items.indexOf(item),
+                            newTopic, newDescription,
+                            priority: priority);
+                        Navigator.of(context).pop();
+                      }
+                    },
                   ),
                 ],
-              ),
-              actions: [
-                TextButton(
-                  child: const Text('Cancel'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: const Text('Save'),
-                  onPressed: () {
-                    final newTopic = topicController.text.trim();
-                    final newDescription = descriptionController.text.trim();
-                    if (newTopic.isNotEmpty) {
-                      todoModel.updateItem(
-                          todoModel.items.indexOf(item), newTopic,
-                          newDescription,
-                          priority: priority);
-                      Navigator.of(context).pop();
-                    }
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
+              );
+            },
+          );
+        });
   }
 }

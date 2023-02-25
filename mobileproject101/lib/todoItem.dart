@@ -97,7 +97,8 @@ class TodoModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateItem(int id, String topic, String? description, {Color? priority}) {
+  void updateItem(int id, String topic, String? description,
+      {Color? priority}) {
     final itemIndex = _items.indexWhere((item) => item.id == id);
     if (itemIndex >= 0) {
       final updatedItem = TodoItem(
@@ -105,7 +106,8 @@ class TodoModel extends ChangeNotifier {
         topic: topic,
         description: description,
         isDone: false,
-        priority: priority ?? Colors.green, // Set default priority value to green
+        priority:
+            priority ?? Colors.green, // Set default priority value to green
       );
       _items[itemIndex] = updatedItem;
       _itemsNotifier.value = _items;
@@ -120,8 +122,5 @@ class TodoModel extends ChangeNotifier {
       final removedItem = _items.removeAt(index);
       _completedItems.add(removedItem);
     }
-    _itemsNotifier.value = _items;
-    _saveItems();
-    notifyListeners();
   }
 }
