@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
         // AppBar
         appBar: AppBar(
           backgroundColor: Colors.green[800], // Updated color
-          title: const Text('Todo List'),
+          title: const Text('TODO List'),
         ),
         // Body
         body: Container(
@@ -152,20 +152,20 @@ class _HomePageState extends State<HomePage> {
                 return StatefulBuilder(
                   builder: (context, setState) {
                     return AlertDialog(
-                      title: const Text('Add an item'),
+                      title: const Text('Add TODO item'),
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           TextField(
                             controller: topicController,
                             decoration: const InputDecoration(
-                              hintText: 'Enter item topic',
+                              hintText: 'TODO',
                             ),
                           ),
                           TextField(
                             controller: descriptionController,
                             decoration: const InputDecoration(
-                              hintText: 'Enter item description',
+                              hintText: 'Description (Optional)',
                             ),
                           ),
                           Row(
@@ -290,19 +290,18 @@ class _HomePageState extends State<HomePage> {
                               });
                             },
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: 10.0),
                           ChoiceChip(
                             label: const Text('Medium'),
                             selectedColor: Colors.yellow,
                             selected: priority == Colors.yellow,
                             onSelected: (bool selected) {
                               setState(() {
-                                priority =
-                                    selected ? Colors.yellow : Colors.red;
+                                priority = selected ? Colors.yellow : Colors.red;
                               });
                             },
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: 10.0),
                           ChoiceChip(
                             label: const Text('High'),
                             selectedColor: Colors.red,

@@ -37,7 +37,13 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'TODO app [V1]',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
+        fontFamily: 'ShakyHandSomeComic', // Set the font family for the app
+        textTheme: const TextTheme(
+          bodyText1: TextStyle(fontSize: 20.0), // Increase the font size for body text
+          bodyText2: TextStyle(fontSize: 20.0), // Increase the font size for body text
+          headline6: TextStyle(fontSize: 30.0), // Increase the font size for headlines
+        ),
       ),
       home: SafeArea(
         child: Scaffold(

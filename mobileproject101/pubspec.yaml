@@ -23,5 +23,11 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter:
+  fonts:
+    - family: ShakyHandSomeComic
+      fonts:
+        - asset: assets/fonts/Shaky Hand Some Comic.otf
+        - asset: assets/fonts/Shaky Hand Some Comic_bold.otf
+          weight: 700
 
   uses-material-design: true
