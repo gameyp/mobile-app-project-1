@@ -14,7 +14,8 @@
 
 🚀 Increase productivity and better manage daily tasks and activities with the To-Do List App.
 
-[Screenshot_20230226_225250](https://user-images.githubusercontent.com/91526996/221421427-07cb6786-c1bf-4e90-83ee-7d8cc8184bec.png)!
-[Screenshot_20230226_225232](https://user-images.githubusercontent.com/91526996/221421443-0d114ff1-fe71-4088-9dc9-c9c0097ded91.png)
-![Screenshot_20230226_225201](https://user-images.githubusercontent.com/91526996/221421450-f70b6aee-aee5-4244-b32c-fef34de79fbc.png)
+| Screenshot 1 | Screenshot 2 | Screenshot 3 |
+| ------------ | ------------ | ------------ |
+| ![Screenshot of Overall Homepage](https://user-images.githubusercontent.com/91526996/221421450-f70b6aee-aee5-4244-b32c-fef34de79fbc.png) | ![Screenshot of Add TODO Item](https://user-images.githubusercontent.com/91526996/221421443-0d114ff1-fe71-4088-9dc9-c9c0097ded91.png) | ![Screenshot of History Page](https://user-images.githubusercontent.com/91526996/221421427-07cb6786-c1bf-4e90-83ee-7d8cc8184bec.png) |
+
 
